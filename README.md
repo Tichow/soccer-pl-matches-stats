@@ -1,98 +1,188 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Soccer PL Matches Stats API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST pour l'analyse des statistiques et données de matchs de Premier League 2024-2025. L'application fournit des informations détaillées sur les matchs, incluant la géolocalisation des stades et les logos des équipes.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Technologies utilisées
 
-## Description
+- **Node.js** - Runtime JavaScript
+- **NestJS** - Framework backend TypeScript
+- **TypeScript** - Langage de programmation typé
+- **JSON** - Stockage de données
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Installation et démarrage
 
-## Project setup
+### Prérequis
+- Node.js version 16 ou supérieure
+- npm ou yarn
 
+### Installation
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
-
+### Enrichissement des données
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npx ts-node src/utils/enrichData.ts
 ```
 
-## Run tests
-
+### Démarrage
 ```bash
-# unit tests
-$ npm run test
+# Mode développement
+npm run start:dev
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Mode production
+npm run build
+npm run start:prod
 ```
 
-## Deployment
+L'API sera accessible sur `http://localhost:3000`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Documentation de l'API
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Endpoints principaux
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+#### Récupération des matchs
+- `GET /matches` - Liste de tous les matchs (format résumé)
+- `GET /matches?team={nom}` - Matchs filtrés par équipe
+- `GET /matches/:id` - Détails complets d'un match spécifique
+
+#### Gestion des favoris
+- `PUT /matches/:id/favorite` - Basculer le statut favori d'un match
+
+#### Création et recherche
+- `POST /matches` - Créer un nouveau match
+- `POST /matches/search` - Rechercher dans les matchs
+
+#### Statistiques
+- `GET /matches/stats` - Statistiques générales du dataset
+- `GET /matches/summary` - Résumé de tous les matchs
+
+### Format des données
+
+#### MatchSummary
+```json
+{
+  "id": "match_1",
+  "date": "2024-08-17",
+  "time": "12:30",
+  "home_team": "Arsenal",
+  "away_team": "Wolverhampton Wanderers",
+  "home_logo": "https://logos.../arsenal.png",
+  "away_logo": "https://logos.../wolves.png",
+  "goals_home": 2,
+  "goals_away": 0,
+  "venue_name": "Emirates Stadium",
+  "latitude": 51.555,
+  "longitude": -0.1086,
+  "is_favorite": false
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### Match complet
+Inclut tous les champs du résumé plus :
+- Détails du stade (capacité, ville)
+- Informations de l'arbitre
+- Détails des équipes (joueurs, événements)
 
-## Resources
+### Exemples d'utilisation
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+# Récupérer tous les matchs
+curl http://localhost:3000/matches
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Détails d'un match
+curl http://localhost:3000/matches/match_1
 
-## Support
+# Matchs d'Arsenal
+curl "http://localhost:3000/matches?team=Arsenal"
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Statistiques
+curl http://localhost:3000/matches/stats
 
-## Stay in touch
+# Recherche
+curl -X POST http://localhost:3000/matches/search \
+  -H "Content-Type: application/json" \
+  -d '{"term": "Manchester"}'
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Fonctionnalités
 
-## License
+### Données enrichies
+- **380 matchs** de Premier League 2024-2025
+- **20 stades** avec coordonnées GPS précises
+- **Logos d'équipes** haute résolution
+- **Informations détaillées** pour chaque match
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Géolocalisation
+Coordonnées GPS intégrées pour tous les stades de Premier League :
+- Old Trafford, Emirates Stadium, Anfield
+- Stamford Bridge, Etihad Stadium, etc.
+
+### Recherche et filtrage
+- Recherche textuelle dans tous les champs
+- Filtrage par équipe
+- Gestion des favoris
+- Statistiques aggregées
+
+### Performance
+- Chargement des données en mémoire au démarrage
+- Réponses rapides (< 100ms)
+- Gestion d'erreurs robuste
+
+## Structure du projet
+
+```
+src/
+├── data/           # Données de stades et équipes
+├── types/          # Définitions TypeScript
+├── utils/          # Utilitaires (enrichissement)
+├── match.service.ts    # Logique métier
+├── match.controller.ts # Endpoints API
+├── match.module.ts     # Configuration NestJS
+└── main.ts            # Point d'entrée
+```
+
+## Données sources
+
+### Dataset initial
+- Format : JSON
+- Source : Données de matchs Premier League 2024-2025
+- Contenu : 380 matchs avec informations basiques
+
+### Enrichissement
+Le script `enrichData.ts` ajoute automatiquement :
+- Coordonnées GPS des stades
+- URLs des logos d'équipes
+- Identifiants uniques
+- Champs de favori
+
+## Développement
+
+### Scripts disponibles
+```bash
+npm run start:dev    # Serveur de développement
+npm run build        # Compilation TypeScript
+npm run start:prod   # Serveur de production
+npm run lint         # Vérification du code
+```
+
+### Tests
+Les tests unitaires et d'intégration restent à implémenter.
+
+### Configuration
+- Port par défaut : 3000
+- Variable d'environnement `PORT` supportée
+- Configuration CORS activée
+
+## Déploiement
+
+L'application est prête pour le déploiement sur des plateformes cloud :
+- Support des variables d'environnement
+- Configuration de production optimisée
+- Gestion d'erreurs appropriée
+
+## Licence
+
+MIT License - voir le fichier LICENSE pour plus de détails.
+
+Copyright (c) 2025 Matteo Quintaneiro & Maël Antunes
