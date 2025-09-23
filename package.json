@@ -2,7 +2,7 @@
   "name": "soccer-pl-matches-stats",
   "version": "1.0.0",
   "description": "API REST pour statistiques et données de matchs Premier League avec géolocalisation",
-  "author": "Matteo Quintaneiro & Antunes",
+  "author": "Matteo Quintaneiro & Mael Antunes",
   "private": true,
   "license": "MIT",
   "scripts": {
