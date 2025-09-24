@@ -170,4 +170,75 @@ export class MatchService implements OnModuleInit {
   getTotalNumberOfMatches(): number {
     return this.storage.size;
   }
+
+  getTopScorers(limit: number = 10) {
+    const scorers: Map<string, number> = new Map();
+    
+    this.getAllMatches().forEach(match => {
+      const allEvents = [...match.details.home.events, ...match.details.away.events];
+      allEvents
+        .filter(event => event.type === 'goal' || event.type === 'penalty_goal')
+        .forEach(event => {
+          const currentGoals = scorers.get(event.player) || 0;
+          scorers.set(event.player, currentGoals + 1);
+        });
+    });
+
+    return Array.from(scorers.entries())
+      .map(([player, goals]) => ({ player, goals }))
+      .sort((a, b) => b.goals - a.goals)
+      .slice(0, limit);
+  }
+
+  getCardStats() {
+    const yellowCards: Map<string, number> = new Map();
+    const redCards: Map<string, number> = new Map();
+    
+    this.getAllMatches().forEach(match => {
+      const allEvents = [...match.details.home.events, ...match.details.away.events];
+      
+      allEvents
+        .filter(event => event.type === 'yellow_card')
+        .forEach(event => {
+          const current = yellowCards.get(event.player) || 0;
+          yellowCards.set(event.player, current + 1);
+        });
+      
+      allEvents
+        .filter(event => event.type === 'red_card')
+        .forEach(event => {
+          const current = redCards.get(event.player) || 0;
+          redCards.set(event.player, current + 1);
+        });
+    });
+
+    return {
+      most_yellow_cards: Array.from(yellowCards.entries())
+        .map(([player, cards]) => ({ player, yellow_cards: cards }))
+        .sort((a, b) => b.yellow_cards - a.yellow_cards)
+        .slice(0, 10),
+      most_red_cards: Array.from(redCards.entries())
+        .map(([player, cards]) => ({ player, red_cards: cards }))
+        .sort((a, b) => b.red_cards - a.red_cards)
+        .slice(0, 10),
+      total_yellow_cards: Array.from(yellowCards.values()).reduce((sum, cards) => sum + cards, 0),
+      total_red_cards: Array.from(redCards.values()).reduce((sum, cards) => sum + cards, 0)
+    };
+  }
+
+  getSeasonStats() {
+    const allMatches = this.getAllMatches();
+    const teams = new Set([
+      ...allMatches.map(match => match.home),
+      ...allMatches.map(match => match.away)
+    ]);
+
+    return {
+      total_matches: this.getTotalNumberOfMatches(),
+      total_teams: teams.size,
+      total_venues: new Set(allMatches.map(match => match.venue.name)).size,
+      top_scorers: this.getTopScorers(),
+      cards: this.getCardStats()
+    };
+  }
 }

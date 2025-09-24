@@ -45,22 +45,7 @@ export class MatchController {
 
   @Get('/stats')
   getStats() {
-    const totalMatches = this.matchService.getTotalNumberOfMatches();
-    const allMatches = this.matchService.getAllMatches();
-    
-    const favorites = allMatches.filter(match => match.is_favorite).length;
-    const venues = new Set(allMatches.map(match => match.venue.name)).size;
-    const teams = new Set([
-      ...allMatches.map(match => match.home),
-      ...allMatches.map(match => match.away)
-    ]).size;
-
-    return {
-      total_matches: totalMatches,
-      total_venues: venues,
-      total_teams: teams,
-      favorites_count: favorites
-    };
+    return this.matchService.getSeasonStats();
   }
 
   @Get(':id')
