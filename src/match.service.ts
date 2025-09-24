@@ -190,6 +190,25 @@ export class MatchService implements OnModuleInit {
       .slice(0, limit);
   }
 
+  getTopAssists(limit: number = 10) {
+    const assists: Map<string, number> = new Map();
+    
+    this.getAllMatches().forEach(match => {
+      const allEvents = [...match.details.home.events, ...match.details.away.events];
+      allEvents
+        .filter(event => (event.type === 'goal' || event.type === 'penalty_goal') && event.assist)
+        .forEach(event => {
+          const currentAssists = assists.get(event.assist!) || 0;
+          assists.set(event.assist!, currentAssists + 1);
+        });
+    });
+
+    return Array.from(assists.entries())
+      .map(([player, assists]) => ({ player, assists }))
+      .sort((a, b) => b.assists - a.assists)
+      .slice(0, limit);
+  }
+
   getCardStats() {
     const yellowCards: Map<string, number> = new Map();
     const redCards: Map<string, number> = new Map();
@@ -238,6 +257,7 @@ export class MatchService implements OnModuleInit {
       total_teams: teams.size,
       total_venues: new Set(allMatches.map(match => match.venue.name)).size,
       top_scorers: this.getTopScorers(),
+      top_assists: this.getTopAssists(),
       cards: this.getCardStats()
     };
   }

@@ -55,7 +55,7 @@ L'API sera accessible sur `http://localhost:3000`
 - `POST /matches/search` - Rechercher dans les matchs (format détaillé)
 
 #### Statistiques
-- `GET /matches/stats` - Statistiques générales du dataset
+- `GET /matches/stats` - Statistiques de la saison 2024-2025 (buteurs, passeurs, cartons)
 
 ### Format des données
 
@@ -101,6 +101,33 @@ Inclut tous les champs détaillés plus :
 - Informations de l'arbitre
 - Détails des équipes (joueurs, événements)
 
+#### Statistiques de saison
+```json
+{
+  "total_matches": 380,
+  "total_teams": 20,
+  "total_venues": 20,
+  "top_scorers": [
+    {"player": "Erling Haaland", "goals": 27},
+    {"player": "Harry Kane", "goals": 24}
+  ],
+  "top_assists": [
+    {"player": "Kevin De Bruyne", "assists": 15},
+    {"player": "Bruno Fernandes", "assists": 12}
+  ],
+  "cards": {
+    "most_yellow_cards": [
+      {"player": "Casemiro", "yellow_cards": 8}
+    ],
+    "most_red_cards": [
+      {"player": "Joao Palhinha", "red_cards": 2}
+    ],
+    "total_yellow_cards": 1247,
+    "total_red_cards": 58
+  }
+}
+```
+
 ### Exemples d'utilisation
 
 ```bash
@@ -116,7 +143,7 @@ curl http://localhost:3000/matches/match_1
 # Matchs détaillés d'Arsenal
 curl "http://localhost:3000/matches/detailed?team=Arsenal"
 
-# Statistiques générales
+# Statistiques de la saison (buteurs, passeurs, cartons)
 curl http://localhost:3000/matches/stats
 
 # Recherche (format détaillé)
@@ -143,11 +170,16 @@ Coordonnées GPS intégrées pour tous les stades de Premier League :
 - **Format detailed** : Informations complètes avec géolocalisation et logos
 - Optimisé selon les besoins d'affichage
 
+### Statistiques avancées
+- **Top 10 buteurs** de la saison avec nombre de buts
+- **Top 10 passeurs** décisifs avec nombre d'assists  
+- **Classements cartons** jaunes et rouges par joueur
+- **Totaux de la saison** : buts, cartons, équipes, stades
+
 ### Recherche et filtrage
 - Recherche textuelle dans tous les champs
 - Filtrage par équipe
 - Gestion des favoris
-- Statistiques aggregées
 
 ### Performance
 - Chargement des données en mémoire au démarrage
