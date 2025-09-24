@@ -1,6 +1,6 @@
 # Soccer PL Matches Stats API
 
-API REST pour l'analyse des statistiques et données de matchs de Premier League 2024-2025. L'application fournit des informations détaillées sur les matchs, incluant la géolocalisation des stades et les logos des équipes.
+API REST pour l'analyse des statistiques et données de matchs de Premier League 2024-2025. L'application propose deux formats de données : un résumé minimaliste avec les événements clés (buteurs, cartons) et un format détaillé avec géolocalisation et logos pour une analyse complète.
 
 ## Technologies utilisées
 
@@ -20,7 +20,7 @@ API REST pour l'analyse des statistiques et données de matchs de Premier League
 npm install
 ```
 
-### Enrichissement des données
+### Enrichissement des données (pour information, cela a déjà été fait)
 ```bash
 npx ts-node src/utils/enrichData.ts
 ```
@@ -42,8 +42,9 @@ L'API sera accessible sur `http://localhost:3000`
 ### Endpoints principaux
 
 #### Récupération des matchs
-- `GET /matches` - Liste de tous les matchs (format résumé)
-- `GET /matches?team={nom}` - Matchs filtrés par équipe
+- `GET /matches/summary` - Résumé minimaliste (équipes, scores, buteurs, cartons) - idéal pour affichage de résultats
+- `GET /matches/detailed` - Format complet avec logos et géolocalisation - pour analyses approfondies
+- `GET /matches/detailed?team={nom}` - Matchs détaillés filtrés par équipe
 - `GET /matches/:id` - Détails complets d'un match spécifique
 
 #### Gestion des favoris
@@ -51,15 +52,31 @@ L'API sera accessible sur `http://localhost:3000`
 
 #### Création et recherche
 - `POST /matches` - Créer un nouveau match
-- `POST /matches/search` - Rechercher dans les matchs
+- `POST /matches/search` - Rechercher dans les matchs (format détaillé)
 
 #### Statistiques
 - `GET /matches/stats` - Statistiques générales du dataset
-- `GET /matches/summary` - Résumé de tous les matchs
 
 ### Format des données
 
-#### MatchSummary
+#### MatchSummary (format minimaliste)
+```json
+{
+  "id": "match_1",
+  "date": "2024-08-17",
+  "time": "12:30",
+  "home_team": "Arsenal",
+  "away_team": "Wolverhampton Wanderers",
+  "goals_home": 2,
+  "goals_away": 0,
+  "goalscorers": ["Kai Havertz", "Bukayo Saka (Gabriel Jesus)"],
+  "assists": ["Gabriel Jesus"],
+  "yellow_cards": ["Thomas Partey"],
+  "red_cards": []
+}
+```
+
+#### MatchDetailed (format complet avec géolocalisation)
 ```json
 {
   "id": "match_1",
@@ -78,8 +95,8 @@ L'API sera accessible sur `http://localhost:3000`
 }
 ```
 
-#### Match complet
-Inclut tous les champs du résumé plus :
+#### Match complet (endpoint spécifique)
+Inclut tous les champs détaillés plus :
 - Détails du stade (capacité, ville)
 - Informations de l'arbitre
 - Détails des équipes (joueurs, événements)
@@ -87,19 +104,22 @@ Inclut tous les champs du résumé plus :
 ### Exemples d'utilisation
 
 ```bash
-# Récupérer tous les matchs
-curl http://localhost:3000/matches
+# Résumé minimaliste de tous les matchs (avec buteurs et cartons)
+curl http://localhost:3000/matches/summary
 
-# Détails d'un match
+# Format détaillé de tous les matchs (avec logos et géolocalisation)
+curl http://localhost:3000/matches/detailed
+
+# Détails d'un match spécifique
 curl http://localhost:3000/matches/match_1
 
-# Matchs d'Arsenal
-curl "http://localhost:3000/matches?team=Arsenal"
+# Matchs détaillés d'Arsenal
+curl "http://localhost:3000/matches/detailed?team=Arsenal"
 
-# Statistiques
+# Statistiques générales
 curl http://localhost:3000/matches/stats
 
-# Recherche
+# Recherche (format détaillé)
 curl -X POST http://localhost:3000/matches/search \
   -H "Content-Type: application/json" \
   -d '{"term": "Manchester"}'
@@ -117,6 +137,11 @@ curl -X POST http://localhost:3000/matches/search \
 Coordonnées GPS intégrées pour tous les stades de Premier League :
 - Old Trafford, Emirates Stadium, Anfield
 - Stamford Bridge, Etihad Stadium, etc.
+
+### Formats de données flexibles
+- **Format summary** : Données essentielles (équipes, scores, buteurs, cartons)
+- **Format detailed** : Informations complètes avec géolocalisation et logos
+- Optimisé selon les besoins d'affichage
 
 ### Recherche et filtrage
 - Recherche textuelle dans tous les champs

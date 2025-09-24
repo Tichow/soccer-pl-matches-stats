@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Match, MatchSummary } from './types/Match';
+import { Match, MatchSummary, MatchDetailed } from './types/Match';
 
 @Injectable()
 export class MatchService implements OnModuleInit {
@@ -61,7 +61,50 @@ export class MatchService implements OnModuleInit {
     );
   }
 
+  private extractMatchEvents(match: Match) {
+    const allEvents = [...match.details.home.events, ...match.details.away.events];
+    
+    const goalscorers = allEvents
+      .filter(event => event.type === 'goal' || event.type === 'penalty_goal')
+      .map(event => event.assist ? `${event.player} (${event.assist})` : event.player);
+    
+    const assists = allEvents
+      .filter(event => (event.type === 'goal' || event.type === 'penalty_goal') && event.assist)
+      .map(event => event.assist!);
+    
+    const yellowCards = allEvents
+      .filter(event => event.type === 'yellow_card')
+      .map(event => event.player);
+    
+    const redCards = allEvents
+      .filter(event => event.type === 'red_card')
+      .map(event => event.player);
+    
+    return {
+      goalscorers: goalscorers.length > 0 ? goalscorers : undefined,
+      assists: assists.length > 0 ? assists : undefined,
+      yellow_cards: yellowCards.length > 0 ? yellowCards : undefined,
+      red_cards: redCards.length > 0 ? redCards : undefined
+    };
+  }
+
   getMatchesSummary(): MatchSummary[] {
+    return this.getAllMatches().map(match => {
+      const events = this.extractMatchEvents(match);
+      return {
+        id: match.id,
+        date: match.date,
+        time: match.time,
+        home_team: match.home,
+        away_team: match.away,
+        goals_home: match.goals_home,
+        goals_away: match.goals_away,
+        ...events
+      };
+    });
+  }
+
+  getMatchesDetailed(): MatchDetailed[] {
     return this.getAllMatches().map(match => ({
       id: match.id,
       date: match.date,

@@ -9,15 +9,15 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import type { Match, MatchSummary } from './types/Match';
+import type { Match, MatchSummary, MatchDetailed } from './types/Match';
 import { MatchService } from './match.service';
 
 @Controller('/matches')
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
-  @Get()
-  getMatches(@Query('team') team?: string): MatchSummary[] {
+  @Get('/detailed')
+  getMatchesDetailed(@Query('team') team?: string): MatchDetailed[] {
     if (team) {
       return this.matchService.getMatchesByTeam(team).map(match => ({
         id: match.id,
@@ -35,7 +35,7 @@ export class MatchController {
         is_favorite: match.is_favorite
       }));
     }
-    return this.matchService.getMatchesSummary();
+    return this.matchService.getMatchesDetailed();
   }
 
   @Get('/summary')
@@ -90,7 +90,7 @@ export class MatchController {
 
   @Post('/search')
   @HttpCode(200)
-  searchMatches(@Body() { term }: { term: string }): MatchSummary[] {
+  searchMatches(@Body() { term }: { term: string }): MatchDetailed[] {
     return this.matchService.searchMatches(term).map(match => ({
       id: match.id,
       date: match.date,

@@ -11,7 +11,7 @@ export interface Venue {
   capacity?: string;
 }
 
-export interface MatchSummary {
+export interface MatchDetailed {
   id: string;
   date: string;
   time: string;
@@ -25,6 +25,20 @@ export interface MatchSummary {
   latitude: number;
   longitude: number;
   is_favorite: boolean;
+}
+
+export interface MatchSummary {
+  id: string;
+  date: string;
+  time: string;
+  home_team: string;
+  away_team: string;
+  goals_home: number;
+  goals_away: number;
+  goalscorers?: string[];
+  assists?: string[];
+  yellow_cards?: string[];
+  red_cards?: string[];
 }
 
 export interface PlayerStats {
