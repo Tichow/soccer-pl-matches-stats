@@ -25,6 +25,53 @@ export const TEAM_LOGOS: Record<string, string> = {
   'Southampton': 'https://upload.wikimedia.org/wikipedia/fr/5/54/Southampton_FC.svg'
 };
 
+export const TEAM_TRIGRAMS: Record<string, string> = {
+  'Manchester Utd': 'MUN',
+  'Manchester City': 'MCI',
+  'Arsenal': 'ARS',
+  'Chelsea': 'CHE',
+  'Liverpool': 'LIV',
+  'Tottenham': 'TOT',
+  'West Ham': 'WHU',
+  'Newcastle Utd': 'NEW',
+  'Aston Villa': 'AVL',
+  'Everton': 'EVE',
+  'Fulham': 'FUL',
+  'Crystal Palace': 'CRY',
+  'Brighton': 'BHA',
+  'Wolves': 'WOL',
+  'Sheffield Utd': 'SHU',
+  'Bournemouth': 'BOU',
+  'Burnley': 'BUR',
+  'Brentford': 'BRE',
+  'Nott\'m Forest': 'NFO',
+  'Norwich City': 'NOR',
+  'Leeds United': 'LEE',
+  'Leicester City': 'LEI',
+  'Ipswich Town': 'IPS',
+  'Southampton': 'SOU'
+};
+
+const TRIGRAM_TO_TEAM = Object.fromEntries(
+  Object.entries(TEAM_TRIGRAMS).map(([team, trigram]) => [trigram, team])
+);
+
 export function getTeamLogo(teamName: string): string {
   return TEAM_LOGOS[teamName] || 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg';
+}
+
+export function getTeamTrigram(teamName: string): string {
+  return TEAM_TRIGRAMS[teamName] || teamName.substring(0, 3).toUpperCase();
+}
+
+export function getTeamFromTrigram(trigram: string): string {
+  return TRIGRAM_TO_TEAM[trigram.toUpperCase()];
+}
+
+export function resolveTeamName(input: string): string {
+  const upperInput = input.toUpperCase();
+  if (TRIGRAM_TO_TEAM[upperInput]) {
+    return TRIGRAM_TO_TEAM[upperInput];
+  }
+  return input;
 }

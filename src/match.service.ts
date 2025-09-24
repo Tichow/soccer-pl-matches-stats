@@ -3,6 +3,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Match, MatchSummary, MatchDetailed } from './types/Match';
+import { resolveTeamName, getTeamTrigram } from './data/teams';
 
 @Injectable()
 export class MatchService implements OnModuleInit {
@@ -11,7 +12,6 @@ export class MatchService implements OnModuleInit {
   private readonly storage: Map<string, Match> = new Map();
 
   async onModuleInit() {
-    // chargement parallèle pour optimiser le démarrage
     await Promise.all([
       this.loadMatchesFromFile(),
       this.loadMatchesFromApi()
@@ -122,22 +122,29 @@ export class MatchService implements OnModuleInit {
     }));
   }
 
-  getMatchesByTeam(teamName: string): Match[] {
+  getMatchesByTeam(teamInput: string): Match[] {
+    const teamName = resolveTeamName(teamInput);
     return this.getAllMatches()
       .filter(match => 
         match.home.toLowerCase().includes(teamName.toLowerCase()) ||
-        match.away.toLowerCase().includes(teamName.toLowerCase())
+        match.away.toLowerCase().includes(teamName.toLowerCase()) ||
+        match.home === teamName ||
+        match.away === teamName
       );
   }
 
   searchMatches(term: string): Match[] {
     const searchTerm = term.toLowerCase();
+    const resolvedTeam = resolveTeamName(term);
+    
     return this.getAllMatches()
       .filter(match =>
         match.home.toLowerCase().includes(searchTerm) ||
         match.away.toLowerCase().includes(searchTerm) ||
         match.venue.name.toLowerCase().includes(searchTerm) ||
-        match.venue.city.toLowerCase().includes(searchTerm)
+        match.venue.city.toLowerCase().includes(searchTerm) ||
+        match.home === resolvedTeam ||
+        match.away === resolvedTeam
       );
   }
 
@@ -156,7 +163,7 @@ export class MatchService implements OnModuleInit {
   }
 
   createMatch(matchData: Omit<Match, 'id'>): Match {
-    const id = `match_${Date.now()}`;
+    const id = `${getTeamTrigram(matchData.home)}-vs-${getTeamTrigram(matchData.away)}-${matchData.date}`;
     const newMatch: Match = { ...matchData, id };
     this.storage.set(id, newMatch);
     return newMatch;

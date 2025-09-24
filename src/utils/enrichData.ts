@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { getStadiumData } from '../data/stadiums';
-import { getTeamLogo } from '../data/teams';
+import { getTeamLogo, getTeamTrigram } from '../data/teams';
 import { Match } from '../types/Match';
 
 interface RawMatch {
@@ -17,6 +17,12 @@ interface RawMatch {
   details: any;
 }
 
+function generateMatchId(homeTeam: string, awayTeam: string, date: string): string {
+  const homeTrigram = getTeamTrigram(homeTeam);
+  const awayTrigram = getTeamTrigram(awayTeam);
+  return `${homeTrigram}-vs-${awayTrigram}-${date}`;
+}
+
 export async function enrichMatchData(): Promise<void> {
   try {
     console.log('loading raw dataset...');
@@ -24,13 +30,13 @@ export async function enrichMatchData(): Promise<void> {
     const rawMatches: RawMatch[] = JSON.parse(rawData);
 
     console.log('enriching data with venues and logos...');
-    const enrichedMatches: Match[] = rawMatches.map((rawMatch, index) => {
+    const enrichedMatches: Match[] = rawMatches.map((rawMatch) => {
       const venue = getStadiumData(rawMatch.venue);
       const homeLogo = getTeamLogo(rawMatch.home);
       const awayLogo = getTeamLogo(rawMatch.away);
 
       return {
-        id: `match_${index + 1}`,
+        id: generateMatchId(rawMatch.home, rawMatch.away, rawMatch.date),
         date: rawMatch.date,
         time: rawMatch.time,
         day: rawMatch.day,
