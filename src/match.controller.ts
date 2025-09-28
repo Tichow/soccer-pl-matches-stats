@@ -48,6 +48,11 @@ export class MatchController {
     return this.matchService.getSeasonStats();
   }
 
+  @Get('/classement')
+  getClassement() {
+    return this.matchService.getClassement();
+  }
+
   @Get(':id')
   getMatch(@Param('id') id: string): Match {
     return this.matchService.getMatch(id);

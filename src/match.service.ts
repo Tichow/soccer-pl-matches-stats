@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Match, MatchSummary, MatchDetailed } from './types/Match';
@@ -50,7 +50,7 @@ export class MatchService implements OnModuleInit {
   getMatch(id: string): Match {
     const match = this.storage.get(id);
     if (!match) {
-      throw new Error(`Match avec l'ID ${id} non trouvé`);
+      throw new NotFoundException(`Match avec l'ID ${id} non trouvé`);
     }
     return match;
   }
@@ -267,5 +267,82 @@ export class MatchService implements OnModuleInit {
       top_assists: this.getTopAssists(),
       cards: this.getCardStats()
     };
+  }
+
+  getClassement() {
+    const allMatches = this.getAllMatches();
+    const teamsStats = new Map();
+
+    const allTeams = new Set([
+      ...allMatches.map(match => match.home),
+      ...allMatches.map(match => match.away)
+    ]);
+
+    allTeams.forEach(team => {
+      teamsStats.set(team, {
+        club: team,
+        mj: 0,    // matchs joués
+        g: 0,     // victoires (gagnés)
+        n: 0,     // nuls
+        p: 0,     // défaites (perdus)
+        bp: 0,    // buts pour
+        bc: 0,    // buts contre
+        db: 0,    // différence de buts
+        pts: 0    // points
+      });
+    });
+
+    // Calculer les stats pour chaque match
+    allMatches.forEach(match => {
+      const homeTeam = match.home;
+      const awayTeam = match.away;
+      const homeGoals = match.goals_home;
+      const awayGoals = match.goals_away;
+
+      // Stats équipe domicile
+      const homeStats = teamsStats.get(homeTeam);
+      homeStats.mj++;
+      homeStats.bp += homeGoals;
+      homeStats.bc += awayGoals;
+      homeStats.db = homeStats.bp - homeStats.bc;
+
+      // Stats équipe extérieur
+      const awayStats = teamsStats.get(awayTeam);
+      awayStats.mj++;
+      awayStats.bp += awayGoals;
+      awayStats.bc += homeGoals;
+      awayStats.db = awayStats.bp - awayStats.bc;
+
+      // Déterminer le résultat
+      if (homeGoals > awayGoals) {
+        // Victoire domicile
+        homeStats.g++;
+        homeStats.pts += 3;
+        awayStats.p++;
+      } else if (homeGoals < awayGoals) {
+        // Victoire extérieur
+        awayStats.g++;
+        awayStats.pts += 3;
+        homeStats.p++;
+      } else {
+        // Match nul
+        homeStats.n++;
+        homeStats.pts += 1;
+        awayStats.n++;
+        awayStats.pts += 1;
+      }
+    });
+
+    // Trier par points (desc), puis différence de buts (desc), puis buts pour (desc)
+    return Array.from(teamsStats.values())
+      .sort((a, b) => {
+        if (b.pts !== a.pts) return b.pts - a.pts;
+        if (b.db !== a.db) return b.db - a.db;
+        return b.bp - a.bp;
+      })
+      .map((team, index) => ({
+        position: index + 1,
+        ...team
+      }));
   }
 }

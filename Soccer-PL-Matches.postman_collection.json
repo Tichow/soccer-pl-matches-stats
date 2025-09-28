@@ -1,0 +1,203 @@
+{
+	"info": {
+		"_postman_id": "70c8e43a-f612-4ddb-9a34-5efee2fd2008",
+		"name": "Soccer PL Matches",
+		"description": "Collection Postman pour tester l'API des matchs de Premier League. Contient les requêtes pour consulter, filtrer, créer et modifier les matchs de la saison 2024-2025. Définir la variable {{url}} avec l'adresse de votre serveur local (ex: http://localhost:3000).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48144552",
+		"_collection_link": "https://tichow-869fb6ef-1159415.postman.co/workspace/Matteo-Quintaneiro's-Workspace~56d612bb-cab0-4fbd-80ca-74131d7b2894/collection/48144552-70c8e43a-f612-4ddb-9a34-5efee2fd2008?action=share&source=collection_link&creator=48144552"
+	},
+	"item": [
+		{
+			"name": "Résumé de tous les matchs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/matches/summary",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"matches",
+						"summary"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Liste détaillée de tous les matchs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/matches/detailed",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"matches",
+						"detailed"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Filtrer matchs par équipe",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/matches/detailed?team=Manchester United",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"matches",
+						"detailed"
+					],
+					"query": [
+						{
+							"key": "team",
+							"value": "Manchester United"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Détails complets d'un match",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/matches/ARS-vs-CHE-2024-08-16",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"matches",
+						"ARS-vs-CHE-2024-08-16"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mettre Favori",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/matches/ARS-vs-CHE-2024-08-16/favorite",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"matches",
+						"ARS-vs-CHE-2024-08-16",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Créer Match",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"date\": \"2024-12-25\",\n  \"time\": \"15:00\",\n  \"day\": \"Wed\",\n  \"home\": \"Arsenal\",\n  \"away\": \"Chelsea\",\n  \"home_logo\": \"https://upload.wikimedia.org/wikipedia/fr/5/53/Arsenal_FC.svg\",\n  \"away_logo\": \"https://upload.wikimedia.org/wikipedia/fr/5/51/Logo_Chelsea.svg\",\n  \"goals_home\": 2,\n  \"goals_away\": 1,\n  \"attendance\": \"60,000\",\n  \"venue\": {\n    \"name\": \"Emirates Stadium\",\n    \"latitude\": 51.5549,\n    \"longitude\": -0.1084,\n    \"city\": \"London\",\n    \"capacity\": \"60,260\"\n  },\n  \"referee\": \"Michael Oliver\",\n  \"is_favorite\": false,\n  \"details\": {\n    \"home\": {\n      \"players\": [\n        {\n          \"name\": \"Aaron Ramsdale\",\n          \"played_from\": 0,\n          \"played_until\": 90,\n          \"yellow_card\": null,\n          \"red_card\": null,\n          \"goals\": [],\n          \"assists\": []\n        }\n      ],\n      \"events\": [\n        {\n          \"minute\": 23,\n          \"player\": \"Gabriel Jesus\",\n          \"sub_player\": null,\n          \"assist\": \"Martin Ødegaard\",\n          \"type\": \"goal\"\n        }\n      ]\n    },\n    \"away\": {\n      \"players\": [\n        {\n          \"name\": \"Kepa Arrizabalaga\",\n          \"played_from\": 0,\n          \"played_until\": 90,\n          \"yellow_card\": null,\n          \"red_card\": null,\n          \"goals\": [],\n          \"assists\": []\n        }\n      ],\n      \"events\": [\n        {\n          \"minute\": 67,\n          \"player\": \"Raheem Sterling\",\n          \"sub_player\": null,\n          \"assist\": null,\n          \"type\": \"goal\"\n        }\n      ]\n    }\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/matches",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rechercher dans les matchs",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"term\": \"Manchester\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/matches/search",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"matches",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Statistiques générales premiere league",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/matches/stats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"matches",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Classement Premier League",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/matches/classement",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"matches",
+						"classement"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
