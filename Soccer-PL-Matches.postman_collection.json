@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "0ac638ad-01dc-4871-82f5-9ebcc3f89788",
 		"name": "Soccer-PL-Matches",
-		"description": "Collection Postman pour tester l'API des matchs de Premier League. Contient les requêtes pour consulter, filtrer, créer et modifier les matchs de la saison 2024-2025. Définir la variable {{url}} avec l'adresse de votre serveur local (ex: http://localhost:3000).",
+		"description": "Collection Postman pour tester l'API des matchs de Premier League. Contient les requêtes pour consulter, filtrer, créer et modifier les matchs de la saison 2024-2025. Définir la variable {{url}} avec l'adresse de l'API en production : https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "48144552",
 		"_collection_link": "https://tichow-869fb6ef-1159415.postman.co/workspace/Matteo-Quintaneiro's-Workspace~56d612bb-cab0-4fbd-80ca-74131d7b2894/collection/48144552-0ac638ad-01dc-4871-82f5-9ebcc3f89788?action=share&source=collection_link&creator=48144552"

@@ -9,7 +9,20 @@ API REST pour l'analyse des statistiques et données de matchs de Premier League
 - **TypeScript** - Langage de programmation typé
 - **JSON** - Stockage de données
 
-## Installation et démarrage
+## API en production
+
+### Accès direct à l'API
+L'API est **déployée et accessible** directement à l'adresse :
+```
+https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io
+```
+
+**Testez immédiatement** avec votre navigateur :
+- [Statistiques générales](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/stats)
+- [Classement Premier League](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/classement)
+- [Résumé des matchs](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/summary)
+
+## Installation et développement local (optionnel)
 
 ### Prérequis
 - Node.js version 16 ou supérieure
@@ -32,7 +45,7 @@ python3 fix-utf8-encoding.py src/dataset-incomplete.json
 npx ts-node src/utils/enrichData.ts
 ```
 
-### Démarrage
+### Démarrage local
 ```bash
 # Mode développement
 npm run start:dev
@@ -41,8 +54,6 @@ npm run start:dev
 npm run build
 npm run start:prod
 ```
-
-L'API sera accessible sur `http://localhost:3000`
 
 ## Documentation de l'API
 
@@ -115,10 +126,10 @@ La recherche accepte **à la fois le nom complet et le trigramme** :
 
 ```bash
 # Par nom complet
-curl "http://localhost:3000/matches/detailed?team=Arsenal"
+curl "https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/detailed?team=Arsenal"
 
 # Par trigramme (plus pratique)
-curl "http://localhost:3000/matches/detailed?team=ARS"
+curl "https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/detailed?team=ARS"
 
 # Même résultat dans les deux cas
 ```
@@ -129,11 +140,15 @@ Pour accéder directement à un match, utilisez l'ID construit avec les trigramm
 
 ```bash
 # Match Manchester United vs Fulham du 16 août 2024
-curl http://localhost:3000/matches/MUN-vs-FUL-2024-08-16
+curl https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/MUN-vs-FUL-2024-08-16
 
 # Match Arsenal vs Wolves du 17 août 2024
-curl http://localhost:3000/matches/ARS-vs-WOL-2024-08-17
+curl https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/ARS-vs-WOL-2024-08-17
 ```
+
+**Ou directement dans le navigateur :**
+- [Manchester Utd vs Fulham](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/MUN-vs-FUL-2024-08-16)
+- [Arsenal vs Wolves](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/ARS-vs-WOL-2024-08-17)
 
 ### Format des données
 
@@ -236,48 +251,57 @@ Inclut tous les champs détaillés plus :
 
 ### Exemples d'utilisation
 
+#### Testez directement dans votre navigateur
+- [Résumé des matchs](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/summary)
+- [Matchs détaillés](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/detailed)
+- [Statistiques générales](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/stats)
+- [Classement Premier League](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/classement)
+- [Matchs d'Arsenal](https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/detailed?team=ARS)
+
+#### 💻 Commandes curl
+
 ```bash
 # Résumé minimaliste de tous les matchs (avec buteurs et cartons)
-curl http://localhost:3000/matches/summary
+curl https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/summary
 
 # Format détaillé de tous les matchs (avec logos et géolocalisation)
-curl http://localhost:3000/matches/detailed
+curl https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/detailed
 
 # Match spécifique par ID user-friendly
-curl http://localhost:3000/matches/ARS-vs-CHE-2024-11-10
+curl https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/ARS-vs-CHE-2024-11-10
 
 # Matchs d'Arsenal (par nom complet)
-curl "http://localhost:3000/matches/detailed?team=Arsenal"
+curl "https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/detailed?team=Arsenal"
 
 # Matchs de Manchester City (par trigramme)
-curl "http://localhost:3000/matches/detailed?team=MCI"
+curl "https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/detailed?team=MCI"
 
 # Statistiques de la saison (buteurs, passeurs, cartons)
-curl http://localhost:3000/matches/stats
+curl https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/stats
 
 # Recherche de matchs (accepte trigrammes et noms)
-curl -X POST http://localhost:3000/matches/search \
+curl -X POST https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/search \
   -H "Content-Type: application/json" \
   -d '{"term": "MUN"}'
 
 # Classement de Premier League
-curl http://localhost:3000/matches/classement
+curl https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/classement
 
 # Ajouter/retirer un match des favoris
-curl -X PUT http://localhost:3000/matches/MUN-vs-FUL-2024-08-16/favorite
+curl -X PUT https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/MUN-vs-FUL-2024-08-16/favorite
 
 # Créer un nouveau match
-curl -X POST http://localhost:3000/matches \
+curl -X POST https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches \
   -H "Content-Type: application/json" \
   -d '{"date":"2024-12-25","time":"15:00","home":"Arsenal","away":"Chelsea",...}'
 
 # Modifier un match existant
-curl -X PUT http://localhost:3000/matches/ARS-vs-CHE-2024-12-25 \
+curl -X PUT https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/ARS-vs-CHE-2024-12-25 \
   -H "Content-Type: application/json" \
   -d '{"goals_home":3,"goals_away":1}'
 
 # Supprimer un match
-curl -X DELETE http://localhost:3000/matches/ARS-vs-CHE-2024-12-25
+curl -X DELETE https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io/matches/ARS-vs-CHE-2024-12-25
 ```
 
 ## Fonctionnalités
@@ -373,17 +397,14 @@ Une collection Postman complète est fournie dans le fichier `Soccer-PL-Matches.
 
 2. **Configurer la variable d'environnement** :
    - Créer un nouvel environnement ou modifier l'environnement actuel
-   - Ajouter la variable `url` avec la valeur `http://localhost:3000`
+   - Ajouter la variable `url` avec la valeur `https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io`
    - Sauvegarder et activer cet environnement
 
-3. **Lancer l'API** :
-   ```bash
-   npm run start:dev
-   ```
-
-4. **Tester les endpoints** :
+3. **Tester directement** :
+   - L'API est déjà déployée et accessible en production
+   - Aucune installation locale nécessaire
    - La collection contient tous les endpoints avec des exemples pré-configurés
-   - Les requests utilisent la variable `{{url}}` qui pointera vers votre serveur local
+   - Les requests utilisent la variable `{{url}}` qui pointera vers l'API en production
 
 ### Endpoints disponibles dans Postman
 - Résumé de tous les matchs
@@ -445,10 +466,17 @@ Les tests unitaires restent à implémenter.
 
 ## Déploiement
 
-L'application est prête pour le déploiement sur des plateformes cloud :
+### Application déployée
+L'application est **actuellement déployée** sur CleverCloud :
+```
+https://app-2d79539a-642b-47d7-a3ae-1d63f00274ab.cleverapps.io
+```
+
+### Configuration de production
 - Support des variables d'environnement
-- Configuration de production optimisée
+- Configuration de production optimisée  
 - Gestion d'erreurs appropriée
+- Déploiement automatique via Git
 
 ## Licence
 
