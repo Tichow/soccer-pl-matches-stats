@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "70c8e43a-f612-4ddb-9a34-5efee2fd2008",
-		"name": "Soccer PL Matches",
+		"_postman_id": "0ac638ad-01dc-4871-82f5-9ebcc3f89788",
+		"name": "Soccer-PL-Matches",
 		"description": "Collection Postman pour tester l'API des matchs de Premier League. Contient les requêtes pour consulter, filtrer, créer et modifier les matchs de la saison 2024-2025. Définir la variable {{url}} avec l'adresse de votre serveur local (ex: http://localhost:3000).",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "48144552",
-		"_collection_link": "https://tichow-869fb6ef-1159415.postman.co/workspace/Matteo-Quintaneiro's-Workspace~56d612bb-cab0-4fbd-80ca-74131d7b2894/collection/48144552-70c8e43a-f612-4ddb-9a34-5efee2fd2008?action=share&source=collection_link&creator=48144552"
+		"_collection_link": "https://tichow-869fb6ef-1159415.postman.co/workspace/Matteo-Quintaneiro's-Workspace~56d612bb-cab0-4fbd-80ca-74131d7b2894/collection/48144552-0ac638ad-01dc-4871-82f5-9ebcc3f89788?action=share&source=collection_link&creator=48144552"
 	},
 	"item": [
 		{
@@ -50,7 +50,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/matches/detailed?team=Manchester United",
+					"raw": "{{url}}/matches/detailed?team=Arsenal",
 					"host": [
 						"{{url}}"
 					],
@@ -61,7 +61,7 @@
 					"query": [
 						{
 							"key": "team",
-							"value": "Manchester United"
+							"value": "Arsenal"
 						}
 					]
 				}
@@ -74,13 +74,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/matches/ARS-vs-CHE-2024-08-16",
+					"raw": "{{url}}/matches/LEI-vs-TOT-2024-08-19",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"matches",
-						"ARS-vs-CHE-2024-08-16"
+						"LEI-vs-TOT-2024-08-19"
 					]
 				}
 			},
@@ -92,13 +92,13 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/matches/ARS-vs-CHE-2024-08-16/favorite",
+					"raw": "{{url}}/matches/WHU-vs-WOL-2024-12-09/favorite",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"matches",
-						"ARS-vs-CHE-2024-08-16",
+						"WHU-vs-WOL-2024-12-09",
 						"favorite"
 					]
 				}
