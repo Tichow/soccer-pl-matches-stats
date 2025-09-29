@@ -101,8 +101,13 @@ Les matchs utilisent un système d'ID basé sur les trigrammes des équipes et l
 - `POST /matches` - Créer un nouveau match
 - `POST /matches/search` - Rechercher dans les matchs (format détaillé)
 
-#### Statistiques
+#### Statistiques et classement
 - `GET /matches/stats` - Statistiques de la saison 2024-2025 (buteurs, passeurs, cartons)
+- `GET /matches/classement` - Classement actuel de Premier League
+
+#### Gestion des matchs
+- `PUT /matches/:id` - Modifier un match existant
+- `DELETE /matches/:id` - Supprimer un match
 
 ### Recherche par équipe
 
@@ -201,6 +206,34 @@ Inclut tous les champs détaillés plus :
 }
 ```
 
+#### Classement Premier League
+```json
+[
+  {
+    "position": 1,
+    "club": "Liverpool",
+    "mj": 17,
+    "g": 13,
+    "n": 3,
+    "p": 1,
+    "bp": 35,
+    "bc": 12,
+    "db": 23,
+    "pts": 42
+  }
+]
+```
+
+**Légende du classement :**
+- `mj` : Matchs joués
+- `g` : Victoires (gagnés)
+- `n` : Matchs nuls
+- `p` : Défaites (perdus)
+- `bp` : Buts pour
+- `bc` : Buts contre
+- `db` : Différence de buts
+- `pts` : Points
+
 ### Exemples d'utilisation
 
 ```bash
@@ -226,6 +259,25 @@ curl http://localhost:3000/matches/stats
 curl -X POST http://localhost:3000/matches/search \
   -H "Content-Type: application/json" \
   -d '{"term": "MUN"}'
+
+# Classement de Premier League
+curl http://localhost:3000/matches/classement
+
+# Ajouter/retirer un match des favoris
+curl -X PUT http://localhost:3000/matches/MUN-vs-FUL-2024-08-16/favorite
+
+# Créer un nouveau match
+curl -X POST http://localhost:3000/matches \
+  -H "Content-Type: application/json" \
+  -d '{"date":"2024-12-25","time":"15:00","home":"Arsenal","away":"Chelsea",...}'
+
+# Modifier un match existant
+curl -X PUT http://localhost:3000/matches/ARS-vs-CHE-2024-12-25 \
+  -H "Content-Type: application/json" \
+  -d '{"goals_home":3,"goals_away":1}'
+
+# Supprimer un match
+curl -X DELETE http://localhost:3000/matches/ARS-vs-CHE-2024-12-25
 ```
 
 ## Fonctionnalités
@@ -309,6 +361,40 @@ Le script `enrichData.ts` ajoute automatiquement :
 - Identifiants user-friendly avec trigrammes
 - Champs de favori
 
+## Tests avec Postman
+
+### Import de la collection
+Une collection Postman complète est fournie dans le fichier `Soccer-PL-Matches.postman_collection.json` :
+
+1. **Importer la collection** :
+   - Ouvrir Postman
+   - Cliquer sur "Import"
+   - Sélectionner le fichier `Soccer-PL-Matches.postman_collection.json`
+
+2. **Configurer la variable d'environnement** :
+   - Créer un nouvel environnement ou modifier l'environnement actuel
+   - Ajouter la variable `url` avec la valeur `http://localhost:3000`
+   - Sauvegarder et activer cet environnement
+
+3. **Lancer l'API** :
+   ```bash
+   npm run start:dev
+   ```
+
+4. **Tester les endpoints** :
+   - La collection contient tous les endpoints avec des exemples pré-configurés
+   - Les requests utilisent la variable `{{url}}` qui pointera vers votre serveur local
+
+### Endpoints disponibles dans Postman
+- Résumé de tous les matchs
+- Liste détaillée avec filtrage par équipe  
+- Détails d'un match spécifique
+- Gestion des favoris
+- Création de nouveau match
+- Recherche dans les matchs
+- Statistiques générales
+- Classement Premier League
+
 ## Développement
 
 ### Scripts disponibles
@@ -317,6 +403,7 @@ npm run start:dev    # Serveur de développement
 npm run build        # Compilation TypeScript
 npm run start:prod   # Serveur de production
 npm run lint         # Vérification du code
+npm run test:e2e     # Tests end-to-end
 
 # Scripts utilitaires
 python3 fix-utf8-encoding.py <fichier>  # Correction d'encodage UTF-8
@@ -324,7 +411,32 @@ npx ts-node src/utils/enrichData.ts     # Enrichissement des données
 ```
 
 ### Tests
-Les tests unitaires et d'intégration restent à implémenter.
+
+#### Tests end-to-end
+Une suite complète de tests e2e est disponible pour valider tous les endpoints :
+
+```bash
+# Lancer les tests e2e
+npm run test:e2e
+
+# Tests avec watch mode
+npm run test:e2e -- --watch
+
+# Tests avec coverage
+npm run test:e2e -- --coverage
+```
+
+**Tests disponibles :**
+- Récupération des matchs (détaillés et résumé)
+- Filtrage par équipe
+- Recherche de matchs
+- Gestion des favoris
+- CRUD complet des matchs
+- Statistiques et classement
+- Gestion d'erreurs (404, etc.)
+
+#### Tests unitaires
+Les tests unitaires restent à implémenter.
 
 ### Configuration
 - Port par défaut : 3000
